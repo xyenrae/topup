@@ -55,6 +55,8 @@
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
+    display: grid;
+    place-items: center;
     transition: all 0.3s ease;
 }
 

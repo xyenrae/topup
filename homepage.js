@@ -339,7 +339,7 @@ function generateNewsCards() {
                 newsCard.innerHTML = `
                     <div class="news-card-image relative overflow-hidden aspect-video">
                         <img src="${news.image}" alt="${news.title}" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-110 group-hover:contrast-110 loading-fade-in">
-                        <div class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-full text-xs font-medium opacity-0 -translate-y-2 transition-all duration-300 backdrop-blur-sm border border-white/20 group-hover:opacity-100 group-hover:translate-y-0">
+                        <div class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm border border-white/20">
                             📚 ${news.readTime}
                         </div>
                     </div>
@@ -472,7 +472,7 @@ function initializeGameCardInteractions() {
         const gameCard = e.target.closest('.game-card');
         if (gameCard) {
             // Get game name from the card
-            const gameTitleElement = gameCard.querySelector('.game-title');
+            const gameTitleElement = gameCard.querySelector('.text-white.font-semibold');
             if (gameTitleElement) {
                 const gameName = gameTitleElement.textContent.trim();
                 
