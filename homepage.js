@@ -472,15 +472,15 @@ function initializeGameCardInteractions() {
         const gameCard = e.target.closest('.game-card');
         if (gameCard) {
             // Get game name from the card
-            const gameTitle = gameCard.querySelector('.game-title');
-            if (gameTitle) {
-                const gameName = gameTitle.textContent.trim();
+            const gameTitleElement = gameCard.querySelector('.game-title');
+            if (gameTitleElement) {
+                const gameName = gameTitleElement.textContent.trim();
                 
                 // Add click animation
                 gameCard.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     gameCard.style.transform = '';
-                    // Navigate to detail page
+                    // Navigate to detail page with the correct game name
                     window.location.href = `detail.html?game=${encodeURIComponent(gameName)}`;
                 }, 150);
             }
