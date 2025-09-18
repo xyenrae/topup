@@ -1,0 +1,47 @@
+/* ===========================
+   MINIMAL DARK THEME COLORS
+   =========================== */
+:root {
+  /* Brand Colors */
+  --color-primary: #667EEA;
+  --color-secondary: #764BA2;
+  --color-accent: #00D4AA;
+  
+  /* Backgrounds */
+  --color-bg: #0F0F0F;
+  --color-surface: #1A1A1A;
+  --color-elevated: #262626;
+  
+  /* Text Colors */
+  --color-text: #F5F5F5;
+  --color-text-muted: #A3A3A3;
+  
+  /* Borders */
+  --color-border: #262626;
+  
+  /* States */
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  
+  /* Interactive */
+  --color-hover: rgba(102, 126, 234, 0.1);
+  --color-active: rgba(102, 126, 234, 0.2);
+  
+  /* Shadows */
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* ===========================
+   UTILITY CLASSES
+   =========================== */
+.bg-primary { background-color: var(--color-primary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-accent { background-color: var(--color-accent); }
+.bg-surface { background-color: var(--color-surface); }
+.bg-elevated { background-color: var(--color-elevated); }
+
+.text-primary { color: var(--color-text); }
+.text-muted { color: var(--color-text-muted); }
+
+.border-default { border-color: var(--color-border); }
