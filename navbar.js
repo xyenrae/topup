@@ -177,8 +177,11 @@ function handleSearch(searchInput) {
 // Theme Switching
 function initTheme() {
   const themeToggle = document.getElementById('themeToggle');
+  const mobileThemeToggle = document.getElementById('mobileThemeToggle');
   const lightIcon = document.getElementById('lightIcon');
   const darkIcon = document.getElementById('darkIcon');
+  const mobileLightIcon = document.getElementById('mobileLightIcon');
+  const mobileDarkIcon = document.getElementById('mobileDarkIcon');
   const html = document.documentElement;
 
   // Check system preference
@@ -189,12 +192,18 @@ function initTheme() {
   // Apply initial theme
   applyTheme(initialTheme);
 
-  // Toggle theme on button click
-  themeToggle?.addEventListener('click', () => {
+  // Toggle theme function
+  const toggleTheme = () => {
     const currentTheme = html.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     applyTheme(newTheme);
-  });
+  };
+
+  // Toggle theme on desktop button click
+  themeToggle?.addEventListener('click', toggleTheme);
+
+  // Toggle theme on mobile button click
+  mobileThemeToggle?.addEventListener('click', toggleTheme);
 
   // Listen for system theme changes
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
@@ -209,34 +218,45 @@ function applyTheme(theme) {
   const html = document.documentElement;
   const lightIcon = document.getElementById('lightIcon');
   const darkIcon = document.getElementById('darkIcon');
+  const mobileLightIcon = document.getElementById('mobileLightIcon');
+  const mobileDarkIcon = document.getElementById('mobileDarkIcon');
 
+  // 1. Set theme attribute synchronously
+  html.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+
+  // 2. Update mobile icons immediately (no animations)
+  if (theme === 'dark') {
+    mobileLightIcon?.classList.add('hidden');
+    mobileDarkIcon?.classList.remove('hidden');
+  } else {
+    mobileDarkIcon?.classList.add('hidden');
+    mobileLightIcon?.classList.remove('hidden');
+  }
+
+  // 3. Handle desktop icons and logos in next frame
   requestAnimationFrame(() => {
-    // Apply theme instantly
-    html.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-
-    // Show/hide theme toggle icons with proper transitions
+    // Desktop icons with smooth transition
     if (theme === 'dark') {
-      // Hide sun icon
       lightIcon?.classList.add('opacity-0', 'scale-0');
-      // Show moon icon
       darkIcon?.classList.remove('opacity-0', 'scale-0');
-
-      // Update logos
-      document.querySelectorAll('img[src*="logo_light.png"]').forEach(logo => {
-        logo.src = logo.src.replace('logo_light.png', 'logo_dark.png');
-      });
     } else {
-      // Show sun icon
-      lightIcon?.classList.remove('opacity-0', 'scale-0');
-      // Hide moon icon
       darkIcon?.classList.add('opacity-0', 'scale-0');
-
-      // Update logos
-      document.querySelectorAll('img[src*="logo_dark.png"]').forEach(logo => {
-        logo.src = logo.src.replace('logo_dark.png', 'logo_light.png');
-      });
+      lightIcon?.classList.remove('opacity-0', 'scale-0');
     }
+
+    // Update logos after a minimal delay to ensure smooth transition
+    setTimeout(() => {
+      if (theme === 'dark') {
+        document.querySelectorAll('img[src*="logo_light.png"]').forEach(logo => {
+          logo.src = logo.src.replace('logo_light.png', 'logo_dark.png');
+        });
+      } else {
+        document.querySelectorAll('img[src*="logo_dark.png"]').forEach(logo => {
+          logo.src = logo.src.replace('logo_dark.png', 'logo_light.png');
+        });
+      }
+    }, 100); // Slightly longer delay for logo changes
   });
 }
 
