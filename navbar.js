@@ -7,7 +7,7 @@ function toggleDropdown(button) {
   const hamburgerIcon = document.getElementById('hamburgerIcon');
   const closeIcon = document.getElementById('closeIcon');
   const dropdown = button.closest('.dropdown');
-  
+
   // Toggle icons
   if (hamburgerIcon.classList.contains('hidden')) {
     // Currently showing X, switch to hamburger and close dropdown
@@ -27,7 +27,7 @@ function toggleDropdown(button) {
 function closeDropdown() {
   const hamburgerIcon = document.getElementById('hamburgerIcon');
   const closeIcon = document.getElementById('closeIcon');
-  
+
   // Reset to hamburger icon
   hamburgerIcon.classList.remove('hidden');
   closeIcon.classList.add('hidden');
@@ -38,7 +38,7 @@ function toggleMobileSearch(button) {
   const searchBar = document.getElementById('mobileSearchBar');
   const searchIcon = document.getElementById('searchIcon');
   const searchCloseIcon = document.getElementById('searchCloseIcon');
-  
+
   if (searchBar.classList.contains('hidden')) {
     // Show search bar and switch to X icon
     searchBar.classList.remove('hidden');
@@ -62,7 +62,7 @@ function closeMobileSearch() {
   const searchBar = document.getElementById('mobileSearchBar');
   const searchIcon = document.getElementById('searchIcon');
   const searchCloseIcon = document.getElementById('searchCloseIcon');
-  
+
   searchBar.classList.add('hidden');
   searchIcon.classList.remove('hidden');
   searchCloseIcon.classList.add('hidden');
@@ -140,7 +140,7 @@ function stopCarousel() {
 function initCarousel() {
   // Set initial active indicator
   updateCarouselIndicators();
-  
+
   // Add click listeners to navigation indicators
   for (let i = 1; i <= 3; i++) {
     const indicator = document.getElementById(`dot${i}`);
@@ -153,14 +153,14 @@ function initCarousel() {
       });
     }
   }
-  
+
   // Add hover pause functionality
   const carousel = document.getElementById('heroCarousel');
   if (carousel) {
     carousel.addEventListener('mouseenter', stopCarousel);
     carousel.addEventListener('mouseleave', startCarousel);
   }
-  
+
   // Start auto-scrolling
   startCarousel();
 }
@@ -174,42 +174,109 @@ function handleSearch(searchInput) {
   }
 }
 
+// Theme Switching
+function initTheme() {
+  const themeToggle = document.getElementById('themeToggle');
+  const lightIcon = document.getElementById('lightIcon');
+  const darkIcon = document.getElementById('darkIcon');
+  const html = document.documentElement;
+
+  // Check system preference
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const savedTheme = localStorage.getItem('theme');
+  const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+
+  // Apply initial theme
+  applyTheme(initialTheme);
+
+  // Toggle theme on button click
+  themeToggle?.addEventListener('click', () => {
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+  });
+
+  // Listen for system theme changes
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      applyTheme(e.matches ? 'dark' : 'light');
+    }
+  });
+}
+
+// Apply theme efficiently
+function applyTheme(theme) {
+  const html = document.documentElement;
+  const lightIcon = document.getElementById('lightIcon');
+  const darkIcon = document.getElementById('darkIcon');
+
+  requestAnimationFrame(() => {
+    // Apply theme instantly
+    html.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+
+    // Show/hide theme toggle icons with proper transitions
+    if (theme === 'dark') {
+      // Hide sun icon
+      lightIcon?.classList.add('opacity-0', 'scale-0');
+      // Show moon icon
+      darkIcon?.classList.remove('opacity-0', 'scale-0');
+
+      // Update logos
+      document.querySelectorAll('img[src*="logo_light.png"]').forEach(logo => {
+        logo.src = logo.src.replace('logo_light.png', 'logo_dark.png');
+      });
+    } else {
+      // Show sun icon
+      lightIcon?.classList.remove('opacity-0', 'scale-0');
+      // Hide moon icon
+      darkIcon?.classList.add('opacity-0', 'scale-0');
+
+      // Update logos
+      document.querySelectorAll('img[src*="logo_dark.png"]').forEach(logo => {
+        logo.src = logo.src.replace('logo_dark.png', 'logo_light.png');
+      });
+    }
+  });
+}
+
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialize carousel
+document.addEventListener('DOMContentLoaded', function () {
+  // Initialize carousel and theme
   initCarousel();
-  
+  initTheme();
+
   // Desktop search
   const desktopSearchInput = document.querySelector('.navbar-center input');
   const desktopSearchButton = document.querySelector('.navbar-center .btn');
-  
+
   if (desktopSearchInput && desktopSearchButton) {
     desktopSearchButton.addEventListener('click', () => handleSearch(desktopSearchInput));
-    desktopSearchInput.addEventListener('keypress', function(e) {
+    desktopSearchInput.addEventListener('keypress', function (e) {
       if (e.key === 'Enter') {
         handleSearch(desktopSearchInput);
       }
     });
   }
-  
+
   // Mobile search in search bar
   const mobileSearchInput = document.querySelector('#mobileSearchBar input');
-  
+
   if (mobileSearchInput) {
-    mobileSearchInput.addEventListener('keypress', function(e) {
+    mobileSearchInput.addEventListener('keypress', function (e) {
       if (e.key === 'Enter') {
         handleSearch(mobileSearchInput);
       }
     });
   }
-  
+
   // Add dropdown event listeners
   const hamburgerButton = document.getElementById('hamburgerButton');
   const dropdown = hamburgerButton?.closest('.dropdown');
-  
+
   if (dropdown) {
     // Listen for dropdown state changes
-    dropdown.addEventListener('focusout', function(e) {
+    dropdown.addEventListener('focusout', function (e) {
       // Check if focus is moving outside the dropdown
       setTimeout(() => {
         if (!dropdown.contains(document.activeElement)) {
@@ -221,17 +288,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Close components when clicking outside
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
   const mobileSearchBar = document.getElementById('mobileSearchBar');
   const searchButton = document.getElementById('searchButton');
   const hamburgerButton = document.getElementById('hamburgerButton');
   const dropdown = hamburgerButton?.closest('.dropdown');
-  
+
   // Close mobile search when clicking outside
   if (mobileSearchBar && !mobileSearchBar.contains(event.target) && !searchButton.contains(event.target) && !mobileSearchBar.classList.contains('hidden')) {
     closeMobileSearch();
   }
-  
+
   // Reset hamburger icon when dropdown closes (DaisyUI handles the dropdown visibility)
   if (dropdown && !dropdown.contains(event.target)) {
     // Check if dropdown is closed and reset icon
@@ -245,10 +312,10 @@ document.addEventListener('click', function(event) {
 });
 
 // Navbar scroll shadow
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
   const navbar = document.querySelector('.navbar');
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  
+
   if (scrollTop > 10) {
     navbar.classList.add('shadow-md');
   } else {

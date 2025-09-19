@@ -1,0 +1,190 @@
+/* Carousel styles */
+.carousel {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-item {
+  scroll-snap-align: center;
+  flex-shrink: 0;
+}
+
+.carousel-indicator {
+  width: 24px;
+  height: 6px;
+  background: var(--color-text-muted);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm);
+}
+
+.carousel-indicator.active {
+  background: var(--color-brand);
+  width: 32px;
+  box-shadow: 0 2px 8px var(--color-brand-muted);
+}
+
+[data-theme="dark"] .carousel-indicator {
+  background: var(--color-dark-text-muted);
+}
+
+[data-theme="dark"] .carousel-indicator.active {
+  background: var(--color-brand);
+  box-shadow: 0 2px 8px var(--color-brand-muted);
+}
+
+/* Side banners fade effect */
+.carousel-item .absolute::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg,
+      var(--color-bg-primary) 0%,
+      transparent 30%,
+      transparent 70%,
+      var(--color-bg-primary) 100%);
+  opacity: 0.3;
+  border-radius: 0.5rem;
+  pointer-events: none;
+}
+
+/* Responsive carousel adjustments */
+@media (max-width: 1023px) {
+  .carousel-indicator {
+    width: 20px;
+    height: 5px;
+  }
+
+  .carousel-indicator.active {
+    width: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .carousel-indicator {
+    width: 18px;
+    height: 4px;
+  }
+
+  .carousel-indicator.active {
+    width: 24px;
+  }
+}
+
+/* Card Styles */
+.card {
+  background-color: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* Game Card */
+.game-title-container {
+  border-top: 1px solid var(--color-border);
+  padding: 0.5rem;
+}
+
+.game-title {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.game-category {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+/* Button Styles */
+.btn-accent {
+  background-color: var(--color-accent) !important;
+  color: var(--color-accent-content) !important;
+  box-shadow: 0 2px 4px var(--color-accent-muted);
+  transition: all 0.3s ease;
+  border: 0;
+}
+
+.btn-accent:hover {
+  background-color: var(--color-accent-focus) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px var(--color-accent-muted);
+}
+
+/* Input Styles */
+.input-group {
+  background-color: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.input-group:focus-within {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.input {
+  color: var(--color-text-primary);
+  background-color: transparent;
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Badge Styles */
+.badge {
+  background-color: var(--color-bg-muted);
+  color: var(--color-text-primary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-brand {
+  background-color: var(--color-brand-muted);
+  color: var(--color-brand);
+}
+
+/* Navbar Elements */
+.navbar {
+  background-color: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Dropdown Menu */
+.dropdown-content {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+}
+
+.dropdown-item {
+  color: var(--color-text-primary);
+  transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: var(--color-bg-muted);
+  color: var(--color-brand);
+}
