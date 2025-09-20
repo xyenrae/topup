@@ -115,6 +115,16 @@
 }
 
 /* Button Styles */
+.btn:hover,
+.btn:active,
+.btn:focus {
+  background: inherit !important;
+  color: inherit !important;
+  border-color: inherit !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
 .btn-accent {
   background-color: var(--color-accent) !important;
   color: var(--color-accent-content) !important;
