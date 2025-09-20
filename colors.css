@@ -14,10 +14,10 @@
 
   /* Dark Theme Text Colors */
   --color-dark-text-primary: #FFFFFF;
-  --color-dark-text-muted: #EDEDED;
+  --color-dark-text-muted: #aeaeae;
 
   /* Accent Colors */
-  --color-accent: #6366F1;
+  --color-accent: #2997FF;
   --color-accent-focus: #4F46E5;
   --color-accent-muted: rgba(99, 102, 241, 0.1);
   --color-accent-content: #FFFFFF;
@@ -134,44 +134,9 @@
   transition: background-color 0.3s ease;
 }
 
-/* Carousel Styles */
-.carousel-indicator {
-  background-color: var(--color-text-muted) !important;
-  transition: all 0.3s ease;
-}
-
-.carousel-indicator.active {
-  background-color: var(--color-primary) !important;
-  transform: scaleX(1.2);
-}
-
 /* Shadow Utilities */
 .shadow-custom {
   box-shadow: 0 1px 2px 0 var(--color-shadow) !important;
-}
-
-/* Button Shadow Effects */
-.btn {
-  transition: all 0.3s ease;
-}
-
-.btn:hover {
-  box-shadow: 0 4px 6px -1px var(--color-shadow);
-  transform: translateY(-1px);
-}
-
-/* Input Styles */
-input,
-select,
-textarea {
-  color: var(--color-base-content) !important;
-  background-color: transparent !important;
-  border-color: var(--color-border) !important;
-  transition: all 0.3s ease;
-}
-
-input::placeholder {
-  color: var(--color-text-muted) !important;
 }
 
 /* Link Hover Effects */
