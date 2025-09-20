@@ -111,6 +111,7 @@
 .game-title-container {
   position: relative;
   z-index: 1;
+  padding: 0.5rem 0;
 }
 
 /* Button Styles */
@@ -133,16 +134,44 @@ textarea:active {
 
 .btn-accent {
   background-color: var(--color-accent) !important;
-  color: var(--color-accent-content) !important;
+  color: var(--color-text-primary) !important;
   box-shadow: 0 2px 4px var(--color-accent-muted);
   transition: all 0.3s ease;
   border: 0;
 }
 
 .btn-accent:hover {
-  background-color: var(--color-accent-focus) !important;
-  transform: translateY(-1px);
+  background-color: var(--color-accent) !important;
+  color: var(--color-text-primary) !important;
   box-shadow: 0 4px 6px var(--color-accent-muted);
+}
+
+.btn-muted {
+  background-color: var(--color-bg-muted) !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: 0 2px 4px var(--color-bg-muted-muted);
+  transition: all 0.3s ease;
+  border: 0;
+}
+
+.btn-muted:hover {
+  background-color: var(--color-bg-muted) !important;
+  color: var(--color-text-muted) !important;
+  box-shadow: 0 4px 6px var(--color-bg-muted-muted);
+}
+
+.btn-ghost {
+  background-color: none !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: 0 2px 4px var(--color-bg-muted-muted);
+  transition: all 0.3s ease;
+  border: 0;
+}
+
+.btn-muted:ghost {
+  background-color: none !important;
+  color: var(--color-text-muted) !important;
+  box-shadow: 0 4px 6px var(--color-bg-muted-muted);
 }
 
 /* Badge Styles */
@@ -182,4 +211,14 @@ textarea:active {
 .dropdown-item:hover {
   background-color: var(--color-bg-muted);
   color: var(--color-accent);
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-text-muted);
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: var(--color-text-primary);
 }

@@ -11,6 +11,7 @@
   /* Dark Theme Colors */
   --color-dark-bg-primary: #141617;
   --color-dark-bg-muted: #1B1E24;
+  --color-dark-bg-subtle: #262A31;
 
   /* Dark Theme Text Colors */
   --color-dark-text-primary: #FFFFFF;
@@ -102,6 +103,11 @@
   transition: background-color 0.3s ease;
 }
 
+.bg-subtle {
+  background-color: var(--color-bg-subtle) !important;
+  transition: background-color 0.3s ease;
+}
+
 /* Text Colors */
 .text-accent {
   color: var(--color-accent) !important;
@@ -137,10 +143,4 @@
 /* Shadow Utilities */
 .shadow-custom {
   box-shadow: 0 1px 2px 0 var(--color-shadow) !important;
-}
-
-/* Link Hover Effects */
-a:not(.btn):hover {
-  color: var(--color-primary) !important;
-  transition: color 0.3s ease;
 }
