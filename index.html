@@ -87,7 +87,7 @@
                 </div>
 
                 <!-- Mobile Search and Menu Buttons -->
-                <div class="lg:hidden flex justify-end gap-2">
+                <div class="lg:hidden flex justify-end">
                     <button class="btn btn-ghost btn-circle" id="searchButton" onclick="toggleMobileSearch(this)">
                         <svg class="w-6 h-6" id="searchIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -136,7 +136,7 @@
                             id="dropdownMenu">
                             <li>
                                 <a href="#"
-                                    class="flex items-center justify-center py-2 px-4 rounded-lg bg-primary text-white">
+                                    class="flex items-center justify-center py-2 px-4 rounded-lg bg-muted text-white">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
@@ -175,9 +175,9 @@
     </div>
 
     <!-- Mobile Search Bar -->
-    <div id="mobileSearchBar" class="hidden lg:hidden w-full bg-primary border-b border-muted shadow-sm">
+    <div id="mobileSearchBar" class="hidden lg:hidden w-full bg-primary border-b border-base-300 shadow-sm">
         <div class="max-w-7xl mx-auto w-full px-4 py-2">
-            <div class="flex items-center w-full bg-muted rounded-lg border border-muted px-4 py-2">
+            <div class="flex items-center w-full bg-muted rounded-lg border border-base-300 px-4 py-2">
                 <button class="mr-3 p-1 hover:bg-muted rounded-md transition-colors">
                     <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -284,7 +284,7 @@
         </div>
         <!-- Game Cards Section -->
         <div class="container mx-auto px-4 py-8 rounded-md">
-            <div class="mb-6 p-4">
+            <div class="mb-6">
                 <h2 class="text-3xl font-bold mb-2 text-primary">Game Populer</h2>
                 <p class="text-muted text-sm sm:text-base">Pilih game favoritmu dan top-up sekarang</p>
             </div>

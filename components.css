@@ -116,13 +116,20 @@
 
 /* Button Styles */
 .btn:hover,
+.btn:focus,
 .btn:active,
-.btn:focus {
+input:hover,
+input:focus,
+input:active,
+textarea:hover,
+textarea:focus,
+textarea:active {
   background: inherit !important;
   color: inherit !important;
-  border-color: inherit !important;
-  transform: none !important;
+  border: none !important;
+  outline: none !important;
   box-shadow: none !important;
+  transform: none !important;
 }
 
 .btn-accent {
