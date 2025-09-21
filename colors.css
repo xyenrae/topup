@@ -3,19 +3,23 @@
   /* Light Theme Colors */
   --color-bg-primary: #FFFFFF;
   --color-bg-muted: #EDEDED;
+  --color-bg-inverse: #252529;
 
   /* Colors */
   --color-text-primary: #252529;
   --color-text-muted: #3B3B3F;
+  --color-text-inverse: #FFFFFF;
 
   /* Dark Theme Colors */
   --color-dark-bg-primary: #141617;
   --color-dark-bg-muted: #1B1E24;
   --color-dark-bg-subtle: #262A31;
+  --color-dark-bg-inverse: #FFFFFF;
 
   /* Dark Theme Text Colors */
   --color-dark-text-primary: #FFFFFF;
   --color-dark-text-muted: #aeaeae;
+  --color-dark-text-inverse: #141617;
 
   /* Accent Colors */
   --color-accent: #2997FF;
@@ -105,6 +109,11 @@
 
 .bg-subtle {
   background-color: var(--color-bg-subtle) !important;
+  transition: background-color 0.3s ease;
+}
+
+.bg-accent {
+  background-color: var(--color-accent) !important;
   transition: background-color 0.3s ease;
 }
 
