@@ -555,13 +555,15 @@
                             <label class="label">
                                 <span class="label-text text-sm font-medium text-primary">User ID</span>
                             </label>
-                            <input type="text" placeholder="Masukkan User ID" class="input input-form w-full" />
+                            <input type="text" placeholder="Masukkan User ID" class="input input-form w-full"
+                                id="input-uid" />
                         </div>
                         <div class="form-control w-full">
                             <label class="label">
                                 <span class="label-text text-sm font-medium text-primary">Server ID</span>
                             </label>
-                            <input type="text" placeholder="Masukkan Server ID" class="input input-form w-full" />
+                            <input type="text" placeholder="Masukkan Server ID" class="input input-form w-full"
+                                id="input-server" />
                         </div>
                     </div>
                 </div>
@@ -1099,7 +1101,7 @@
                             <span class="text-base font-medium text-primary">Total Pembayaran</span>
                             <span id="totalPayment" class="text-lg font-semibold text-accent">-</span>
                         </div>
-                        <button class="btn btn-accent w-full">Buat Pesanan</button>
+                        <button id="orderButton" class="btn btn-accent w-full">Buat Pesanan</button>
                         <div class="text-center text-sm text-muted">
                             Butuh bantuan? Hubungi kami di
                             <a href="https://wa.me/628111254413" class="text-accent hover:text-accent-focus">
@@ -1260,5 +1262,126 @@
         </div>
     </div>
 </body>
+
+<!-- Modal Konfirmasi -->
+<dialog id="confirmationModal" class="modal">
+    <div class="modal-box max-w-md bg-primary border border-base-200">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-primary flex items-center gap-2">
+                <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Konfirmasi Pesanan
+            </h3>
+            <button onclick="closeModal()" class="btn btn-sm btn-circle btn-ghost text-muted hover:bg-muted">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="space-y-4 mb-6">
+            <!-- User Info -->
+            <div class="bg-muted rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-muted text-sm font-medium">Username</span>
+                    <span class="text-primary font-bold" id="username">-</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-muted text-sm">UID</span>
+                    <span class="text-primary font-semibold" id="uid">-</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-muted text-sm">Server</span>
+                    <span class="text-primary font-semibold" id="server">-</span>
+                </div>
+            </div>
+
+            <!-- Diamond Info -->
+            <div class="bg-muted rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-muted text-sm font-medium">Diamond UC</span>
+                    <span class="text-primary font-bold" id="diamondAmount">-</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-muted text-sm">Harga</span>
+                    <span class="text-primary font-semibold" id="diamondPrice">-</span>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="bg-muted rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-muted text-sm font-medium">Metode Pembayaran</span>
+                    <span class="text-primary font-bold" id="paymentMethod">-</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-muted text-sm">Biaya Admin</span>
+                    <span class="text-primary font-semibold" id="paymentFee">-</span>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="border-t border-muted"></div>
+
+            <!-- Total -->
+            <div class="bg-muted rounded-lg p-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-muted font-medium">Total Pembayaran</span>
+                    <span class="text-primary text-xl font-bold" id="totalAmount">-</span>
+                </div>
+            </div>
+            <p>Pastikan data game Anda sudah benar. Kesalahan input data game bukan tanggung jawab kami.</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3">
+            <button onclick="closeModal()" class="btn flex-1 btn-muted">
+                Batal
+            </button>
+            <button onclick="confirmOrder()" class="btn flex-1 btn-accent">
+                Konfirmasi Pesanan
+            </button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button onclick="closeModal()">close</button>
+    </form>
+</dialog>
+
+<!-- Success Modal -->
+<dialog id="successModal" class="modal">
+    <div class="modal-box max-w-sm bg-primary border border-muted text-center">
+        <div class="mb-4">
+            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-primary">Order Berhasil Dibuat!</h3>
+            <p class="text-muted text-sm mt-2">
+                Silakan lanjutkan ke pembayaran untuk menyelesaikan pesanan Anda.
+            </p>
+
+            <!-- Order ID -->
+            <p class="text-sm font-semibold mt-3 text-white">
+                Order ID: <span id="successOrderId" class="text-accent"></span>
+            </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <!-- Tombol untuk melanjutkan pembayaran -->
+            <button onclick="proceedToPayment()" class="btn btn-accent">
+                Lanjutkan Pembayaran
+            </button>
+        </div>
+    </div>
+</dialog>
+
+
 
 </html>

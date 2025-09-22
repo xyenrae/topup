@@ -4,6 +4,8 @@
 
 // Initialize the transaction state with diamond prices from HTML
 const transactionState = {
+    uid: 0,
+    server: 0,
     selectedAmount: null,
     selectedAmountPrice: 0,
     selectedMethod: null,
@@ -50,11 +52,94 @@ function formatIDR(number) {
 
 // Initialize event listeners when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
+    initializeUidAndServerInputs();
     initializeDiamondSelection();
     initializePaymentMethodSelection();
     initializeOrderButton();
+    loadTransactionState();
     console.log('Payment system initialized');
 });
+
+function saveTransactionState() {
+    localStorage.setItem("transactionState", JSON.stringify(transactionState));
+}
+
+function loadTransactionState() {
+    const saved = localStorage.getItem("transactionState");
+    if (saved) {
+        Object.assign(transactionState, JSON.parse(saved));
+        updateConfirmationSection();
+
+        // Sync payment method selection
+        if (transactionState.selectedMethod) {
+            const paymentInput = document.querySelector(
+                `.payment-method-input[value="${transactionState.selectedMethod}"]`
+            );
+            if (paymentInput) {
+                paymentInput.checked = true; // set input checked
+                updatePaymentVisualSelection(transactionState.selectedMethod);
+
+                // Buka collapse container
+                const collapse = paymentInput.closest(".collapse");
+                if (collapse) {
+                    collapse.classList.add("collapse-open");
+                    // kalau pakai input[type=checkbox] di header collapse:
+                    const collapseToggle = collapse.querySelector("input[type=checkbox]");
+                    if (collapseToggle) {
+                        collapseToggle.checked = true;
+                    }
+                }
+            }
+        }
+
+        // Sync diamond selection (biar lengkap)
+        if (transactionState.selectedAmount) {
+            const diamondInput = document.querySelector(
+                `.diamond-input[value="${transactionState.selectedAmount}"]`
+            );
+            if (diamondInput) {
+                diamondInput.checked = true;
+            }
+            updateDiamondVisualSelection(transactionState.selectedAmount);
+        }
+    }
+}
+
+function clearTransactionState() {
+    localStorage.removeItem("transactionState");
+}
+
+function generateOrderId() {
+    return 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+}
+
+function saveOrderHistory(orderData) {
+    let history = JSON.parse(localStorage.getItem("ordersHistory")) || [];
+    history.push(orderData);
+    localStorage.setItem("ordersHistory", JSON.stringify(history));
+}
+
+// Initialize UID & Server inputs
+function initializeUidAndServerInputs() {
+    const uidInput = document.getElementById('input-uid');
+    const serverInput = document.getElementById('input-server');
+
+    if (uidInput) {
+        uidInput.addEventListener('input', () => {
+            transactionState.uid = uidInput.value.trim();
+            updateConfirmationSection();
+            saveTransactionState();
+        });
+    }
+
+    if (serverInput) {
+        serverInput.addEventListener('input', () => {
+            transactionState.server = serverInput.value.trim();
+            updateConfirmationSection();
+            saveTransactionState();
+        });
+    }
+}
 
 // Initialize diamond selection functionality
 function initializeDiamondSelection() {
@@ -112,6 +197,8 @@ function selectDiamond(amount) {
 
     // Update visual selection
     updateDiamondVisualSelection(amount);
+
+    saveTransactionState();
 }
 
 // Function to update visual selection for diamond cards
@@ -166,6 +253,8 @@ function selectPaymentMethod(method) {
 
     // Update visual selection
     updatePaymentVisualSelection(method);
+
+    saveTransactionState();
 }
 
 // Function to update visual selection for payment methods
@@ -183,11 +272,25 @@ function updatePaymentVisualSelection(selectedMethod) {
 
 // Function to update confirmation section
 function updateConfirmationSection() {
+    const uid = transactionState.uid;
+    const server = transactionState.server;
     const basePrice = transactionState.selectedAmountPrice;
     const adminFee = transactionState.selectedMethodFee;
     const totalPrice = basePrice + adminFee;
 
-    console.log('Updating confirmation:', { basePrice, adminFee, totalPrice });
+    console.log('Updating confirmation:', { uid, server, basePrice, adminFee, totalPrice });
+
+    // Update uid
+    const uidElement = document.getElementById('input-uid');
+    if (uidElement) {
+        uidElement.value = uid ? uid : '';
+    }
+
+    // Update server
+    const serverElement = document.getElementById('input-server');
+    if (serverElement) {
+        serverElement.value = server ? server : '';
+    }
 
     // Update base price
     const basePriceElement = document.getElementById('basePrice');
@@ -215,7 +318,7 @@ function updateConfirmationSection() {
 function updateOrderButtonState() {
     const orderButton = document.getElementById('orderButton');
     if (orderButton) {
-        const canOrder = transactionState.selectedAmount && transactionState.selectedMethod;
+        const canOrder = transactionState.uid && transactionState.server && transactionState.selectedAmount && transactionState.selectedMethod;
         orderButton.disabled = !canOrder;
 
         if (canOrder) {
@@ -223,19 +326,23 @@ function updateOrderButtonState() {
             orderButton.textContent = 'Buat Pesanan';
         } else {
             orderButton.classList.add('opacity-50', 'cursor-not-allowed');
-            orderButton.textContent = 'Pilih Diamond & Payment Method';
+            orderButton.textContent = 'Lengkapi data terlebih dahulu!';
         }
     }
 }
 
 // Function to create order
 function createOrder() {
-    if (!transactionState.selectedAmount || !transactionState.selectedMethod) {
-        alert('Silakan pilih jumlah diamond dan metode pembayaran terlebih dahulu!');
+    if (!transactionState.uid || !transactionState.server || !transactionState.selectedAmount || !transactionState.selectedMethod) {
+        alert('Silakan lengkapi data terlebih dahulu!');
         return;
     }
 
     const orderData = {
+        user: {
+            user: transactionState.uid,
+            server: transactionState.server
+        },
         diamond: {
             amount: transactionState.selectedAmount,
             price: transactionState.selectedAmountPrice
@@ -250,7 +357,7 @@ function createOrder() {
     console.log('Creating order with data:', orderData);
 
     // Here you would typically send the order to your backend
-    alert(`Pesanan berhasil dibuat!\n\nDiamond: ${orderData.diamond.amount} UC\nMetode: ${transactionState.selectedMethod}\nTotal: ${formatIDR(orderData.total)}`);
+    showConfirmationModal();
 }
 
 // Add CSS for selected states
@@ -288,3 +395,79 @@ style.textContent = `
 document.head.appendChild(style);
 
 console.log('Payment system script loaded successfully');
+
+function showConfirmationModal() {
+    if (!transactionState.uid || !transactionState.server || !transactionState.selectedAmount || !transactionState.selectedMethod) {
+        alert('Silakan pilih jumlah diamond dan metode pembayaran terlebih dahulu!');
+        return;
+    }
+
+    // Populate modal data
+    document.getElementById('username').textContent = transactionState.username;
+    document.getElementById('uid').textContent = transactionState.uid;
+    document.getElementById('server').textContent = transactionState.server;
+    document.getElementById('diamondAmount').textContent = transactionState.selectedAmount + ' UC';
+    document.getElementById('diamondPrice').textContent = formatIDR(transactionState.selectedAmountPrice);
+    document.getElementById('paymentMethod').textContent = transactionState.selectedMethod;
+    document.getElementById('paymentFee').textContent = formatIDR(transactionState.selectedMethodFee);
+    document.getElementById('totalAmount').textContent = formatIDR(transactionState.selectedAmountPrice + transactionState.selectedMethodFee);
+
+    // Show modal
+    document.getElementById('confirmationModal').showModal();
+}
+
+function closeModal() {
+    document.getElementById('confirmationModal').close();
+}
+
+function confirmOrder() {
+    const orderId = generateOrderId();
+
+    const orderData = {
+        orderId,
+        timestamp: new Date().toISOString(),
+        user: {
+            uid: transactionState.uid,
+            server: transactionState.server,
+        },
+        diamond: {
+            amount: transactionState.selectedAmount,
+            price: transactionState.selectedAmountPrice
+        },
+        payment: {
+            method: transactionState.selectedMethod,
+            fee: transactionState.selectedMethodFee
+        },
+        total: transactionState.selectedAmountPrice + transactionState.selectedMethodFee
+    };
+
+    console.log('Order confirmed:', orderData);
+
+    // Simpan ke riwayat
+    saveOrderHistory(orderData);
+
+    // Hapus state aktif (reset)
+    clearTransactionState();
+
+    // Tutup modal konfirmasi
+    closeModal();
+
+    // Isi order ID di success modal
+    const orderIdElement = document.getElementById('successOrderId');
+    if (orderIdElement) {
+        orderIdElement.textContent = orderId;
+    }
+
+    // Show success modal
+    setTimeout(() => {
+        document.getElementById('successModal').showModal();
+    }, 300);
+}
+
+function proceedToPayment() {
+    const orderId = document.getElementById('successOrderId').textContent;
+    console.log("Proceeding to payment for Order:", orderId);
+
+    // redirect dummy
+    window.location.href = "/payment?orderId=" + orderId;
+}
