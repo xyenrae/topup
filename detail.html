@@ -9,6 +9,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
 
+    <style>
+        .diamond-card.selected,
+        .payment-method.selected {
+            border-color: var(--color-accent) !important;
+            background-color: var(--color-accent-muted) !important;
+        }
+    </style>
+
     <!-- Inter Font for Professional Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +28,7 @@
 
     <!-- Custom JavaScript -->
     <script src="navbar.js" defer></script>
+    <script src="payment.js" defer></script>
 </head>
 
 <body class="bg-primary">
@@ -189,7 +198,7 @@
         </div>
     </div>
 
-    <main class="min-h-screen max-w-7xl mx-auto px-4 py-8">
+    <main class="min-h-screen max-w-7xl mx-auto lg:px-4 py-8">
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Left Section -->
             <div class="lg:w-[40%] space-y-6">
@@ -230,7 +239,7 @@
                     </div>
                 </div>
 
-                <div class="bg-muted rounded-2xl p-8 space-y-6">
+                <div class="bg-primary rounded-2xl p-8 space-y-6 shadow-sm border border-base-300">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
                             <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -320,7 +329,7 @@
                 </div>
 
                 <!-- Important Information - Redesigned -->
-                <div class="bg-muted rounded-2xl p-8 space-y-6">
+                <div class="bg-primary rounded-2xl p-8 space-y-6 border border-base-300">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
                             <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -421,7 +430,7 @@
 
                 <!-- Ratings & Reviews -->
                 <div
-                    class="bg-muted rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 p-8 space-y-6">
+                    class="bg-muted border border-base-300 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 p-8 space-y-6">
                     <!-- Header dengan trust indicators -->
                     <div class="flex items-start justify-between">
                         <div>
@@ -538,8 +547,8 @@
             <!-- Right Section - Top Up Form -->
             <div class="lg:w-[60%] space-y-6">
                 <!-- Step 1: User Data -->
-                <div class="bg-muted rounded-xl p-6">
-                    <div class="flex items-center gap-3 mb-4">
+                <div class="bg-primary border border-base-300 rounded-xl shadow-md">
+                    <div class="flex items-center gap-3 mb-4 bg-linear pt-6 px-6 rounded-xl">
                         <div class="avatar relative">
                             <div
                                 class="w-8 h-8 bg-accent text-primary rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 relative">
@@ -549,27 +558,25 @@
                         </div>
                         <h3 class="text-lg font-semibold text-primary">Lengkapi Data</h3>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 px-6 pb-6">
                         <div class="form-control w-full">
                             <label class="label">
                                 <span class="label-text text-sm font-medium text-primary">User ID</span>
                             </label>
-                            <input type="text" placeholder="Masukkan User ID"
-                                class="input input-bordered w-full bg-primary" />
+                            <input type="text" placeholder="Masukkan User ID" class="input input-form w-full" />
                         </div>
                         <div class="form-control w-full">
                             <label class="label">
                                 <span class="label-text text-sm font-medium text-primary">Server ID</span>
                             </label>
-                            <input type="text" placeholder="Masukkan Server ID"
-                                class="input input-bordered w-full bg-primary" />
+                            <input type="text" placeholder="Masukkan Server ID" class="input input-form w-full" />
                         </div>
                     </div>
                 </div>
 
                 <!-- Step 2: Select Amount -->
-                <div class="bg-muted rounded-xl p-6">
-                    <div class="flex items-center gap-3 mb-4">
+                <div class="bg-primary border border-base-300 rounded-xl">
+                    <div class="flex items-center gap-3 mb-4 bg-linear px-6 pt-6 rounded-xl">
                         <div class="avatar relative">
                             <div
                                 class="w-8 h-8 bg-accent text-primary rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 relative">
@@ -579,93 +586,487 @@
                         </div>
                         <h3 class="text-lg font-semibold text-primary">Pilih Nominal</h3>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        <button class="btn btn-outline hover:bg-accent hover:border-accent">
-                            <div class="text-left">
-                                <div class="text-sm font-semibold">86 Diamond</div>
-                                <div class="text-xs text-muted">Rp 19.000</div>
+                    <div class="diamond-grid px-6 pb-6">
+                        <label class="diamond-option">
+                            <input type="radio" name="diamond" value="60" class="diamond-input">
+                            <div class="diamond-card">
+                                <div class="diamond-amount">60 UC</div>
+                                <div class="price-container">
+                                    <span class="original-price original-price-no-discount">Rp 16.000</span>
+                                </div>
+                                <div class="check-indicator">
+                                    <svg class="check-icon" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
                             </div>
-                        </button>
-                        <button class="btn btn-outline hover:bg-accent hover:border-accent">
-                            <div class="text-left">
-                                <div class="text-sm font-semibold">172 Diamond</div>
-                                <div class="text-xs text-muted">Rp 38.000</div>
+                        </label>
+
+                        <label class="diamond-option">
+                            <input type="radio" name="diamond" value="120" class="diamond-input">
+                            <div class="diamond-card">
+                                <div class="diamond-amount">120 UC</div>
+                                <div class="price-container">
+                                    <span class="current-price">Rp 29.629</span>
+                                    <span class="original-price">Rp 30.784</span>
+                                </div>
+                                <div class="check-indicator">
+                                    <svg class="check-icon" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
                             </div>
-                        </button>
-                        <button class="btn btn-outline hover:bg-accent hover:border-accent">
-                            <div class="text-left">
-                                <div class="text-sm font-semibold">257 Diamond</div>
-                                <div class="text-xs text-muted">Rp 57.000</div>
+                        </label>
+
+                        <label class="diamond-option">
+                            <input type="radio" name="diamond" value="325" class="diamond-input">
+                            <div class="diamond-card">
+                                <div class="diamond-amount">325 UC</div>
+                                <div class="price-container">
+                                    <span class="current-price">Rp 75.240</span>
+                                    <span class="original-price">Rp 79.000</span>
+                                </div>
+                                <div class="check-indicator">
+                                    <svg class="check-icon" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
                             </div>
-                        </button>
-                        <button class="btn btn-outline hover:bg-accent hover:border-accent">
-                            <div class="text-left">
-                                <div class="text-sm font-semibold">344 Diamond</div>
-                                <div class="text-xs text-muted">Rp 76.000</div>
+                        </label>
+
+                        <label class="diamond-option">
+                            <input type="radio" name="diamond" value="660" class="diamond-input">
+                            <div class="diamond-card">
+                                <div class="diamond-amount">660 UC</div>
+                                <div class="price-container">
+                                    <span class="current-price">Rp 150.480</span>
+                                    <span class="original-price">Rp 158.000</span>
+                                </div>
+                                <div class="check-indicator">
+                                    <svg class="check-icon" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
                             </div>
-                        </button>
-                        <button class="btn btn-outline hover:bg-accent hover:border-accent">
-                            <div class="text-left">
-                                <div class="text-sm font-semibold">429 Diamond</div>
-                                <div class="text-xs text-muted">Rp 95.000</div>
+                        </label>
+
+                        <label class="diamond-option">
+                            <input type="radio" name="diamond" value="1800" class="diamond-input">
+                            <div class="diamond-card">
+                                <div class="diamond-amount">1800 UC</div>
+                                <div class="price-container">
+                                    <span class="current-price">Rp 376.200</span>
+                                    <span class="original-price">Rp 395.000</span>
+                                </div>
+                                <div class="check-indicator">
+                                    <svg class="check-icon" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
                             </div>
-                        </button>
-                        <button class="btn btn-outline hover:bg-accent hover:border-accent">
-                            <div class="text-left">
-                                <div class="text-sm font-semibold">514 Diamond</div>
-                                <div class="text-xs text-muted">Rp 114.000</div>
+                        </label>
+
+                        <label class="diamond-option">
+                            <input type="radio" name="diamond" value="3850" class="diamond-input">
+                            <div class="diamond-card">
+                                <div class="diamond-amount">3850 UC</div>
+                                <div class="price-container">
+                                    <span class="current-price">Rp 752.400</span>
+                                    <span class="original-price">Rp 790.000</span>
+                                </div>
+                                <div class="check-indicator">
+                                    <svg class="check-icon" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
                             </div>
-                        </button>
+                        </label>
                     </div>
                 </div>
 
                 <!-- Step 3: Payment Method -->
-                <div class="bg-muted rounded-xl p-6">
-                    <div class="flex items-center gap-3 mb-4">
+                <div class="bg-primary border border-base-300 rounded-xl">
+                    <div class="flex items-center gap-3 mb-4 bg-linear px-6 pt-6 rounded-xl">
                         <div class="avatar relative">
                             <div
                                 class="w-8 h-8 bg-accent text-primary rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 relative">
-                                <p class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 leading-none">
-                                    3</p>
+                                <p class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 leading-none">3
+                                </p>
                             </div>
                         </div>
                         <h3 class="text-lg font-semibold text-primary">Metode Pembayaran</h3>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div class="payment-method">
-                            <div class="flex items-center gap-3">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/BANK_BCA_logo.svg/2560px-BANK_BCA_logo.svg.png"
-                                    alt="BCA" class="h-6 object-contain">
-                                <span class="text-sm font-medium">Transfer BCA</span>
+
+                    <div class="px-6 pb-6 space-y-4">
+                        <!-- E-wallet dan QRIS -->
+                        <div class="collapse collapse-arrow bg-base-200 rounded-lg">
+                            <input type="checkbox" name="ewallet-accordion" class="peer" />
+                            <div class="collapse-title text-lg font-medium flex items-center gap-3">
+                                <span class="text-sm">💳</span>
+                                E-wallet dan QRIS
+                            </div>
+                            <div class="collapse-content">
+                                <div class="payment-method-grid mt-4">
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="dana" class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://logos-world.net/wp-content/uploads/2020/12/Dana-Logo.png"
+                                                    alt="DANA" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">DANA</div>
+                                                    <div class="text-xs text-gray-500">Gratis biaya admin</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"> </div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="gopay" class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqhIVFRHmXmDDFVNRDsAl7bfqL8pnDzkBLNA&s"
+                                                    alt="GoPay" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">GoPay</div>
+                                                    <div class="text-xs text-gray-500">Gratis biaya admin</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="ovo" class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/2560px-Logo_ovo_purple.svg.png"
+                                                    alt="OVO" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">OVO</div>
+                                                    <div class="text-xs text-gray-500">Gratis biaya admin</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="shopeepay"
+                                            class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVU0rghWpyGaHUj9QLWIwR_H0HZg6T3c9UYA&s"
+                                                    alt="ShopeePay" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">ShopeePay</div>
+                                                    <div class="text-xs text-gray-500">Gratis biaya admin</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="linkaja" class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf2Hl2sXIUpOGVHXyb7YlOQWMg2nUUCTmJjg&s"
+                                                    alt="LinkAja" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">LinkAja</div>
+                                                    <div class="text-xs text-gray-500">Gratis biaya admin</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        <div class="payment-method">
-                            <div class="flex items-center gap-3">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/2560px-Bank_Mandiri_logo_2016.svg.png"
-                                    alt="Mandiri" class="h-6 object-contain">
-                                <span class="text-sm font-medium">Transfer Mandiri</span>
+
+                        <!-- Virtual Account -->
+                        <div class="collapse collapse-arrow bg-base-200 rounded-lg">
+                            <input type="checkbox" name="va-accordion" class="peer" />
+                            <div class="collapse-title text-lg font-medium flex items-center gap-3">
+                                <span class="text-sm">🏦</span>
+                                Virtual Account
+                            </div>
+                            <div class="collapse-content">
+                                <div class="payment-method-grid mt-4">
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="bca-va" class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/BANK_BCA_logo.svg/2560px-BANK_BCA_logo.svg.png"
+                                                    alt="BCA" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">BCA Virtual Account</div>
+                                                    <div class="text-xs text-gray-500">Biaya admin Rp 4.000</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="mandiri-va"
+                                            class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/2560px-Bank_Mandiri_logo_2016.svg.png"
+                                                    alt="Mandiri" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">Mandiri Virtual Account</div>
+                                                    <div class="text-xs text-gray-500">Biaya admin Rp 4.000</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="bni-va" class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/BNI_logo.svg/2560px-BNI_logo.svg.png"
+                                                    alt="BNI" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">BNI Virtual Account</div>
+                                                    <div class="text-xs text-gray-500">Biaya admin Rp 4.000</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="bri-va" class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNHQNX4j6-fCk1wK-6L8GtNgCJxaOZo8M2xw&s"
+                                                    alt="BRI" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">BRI Virtual Account</div>
+                                                    <div class="text-xs text-gray-500">Biaya admin Rp 4.000</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="permata-va"
+                                            class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKJHAHdMuGZUhWc5XqoCH_5QUfYg-kUYP6Aw&s"
+                                                    alt="Permata Bank" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">Permata Virtual Account</div>
+                                                    <div class="text-xs text-gray-500">Biaya admin Rp 4.000</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="cimb-va" class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5Yb8eK7b5pTG8jJK9gIXVYdJ7V0mGWjZ_0g&s"
+                                                    alt="CIMB Niaga" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">CIMB Niaga Virtual Account</div>
+                                                    <div class="text-xs text-gray-500">Biaya admin Rp 4.000</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="danamon-va"
+                                            class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVGLjdR5E4Xd6EGYzN3HpV5K1zC5xF5oM7jg&s"
+                                                    alt="Danamon" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">Danamon Virtual Account</div>
+                                                    <div class="text-xs text-gray-500">Biaya admin Rp 4.000</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="maybank-va"
+                                            class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB5YaKvHwM4Zz5XqK4rP9V8wGzJ3xN1oQ7IA&s"
+                                                    alt="Maybank" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">Maybank Virtual Account</div>
+                                                    <div class="text-xs text-gray-500">Biaya admin Rp 4.000</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        <div class="payment-method">
-                            <div class="flex items-center gap-3">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png"
-                                    alt="QRIS" class="h-6 object-contain">
-                                <span class="text-sm font-medium">QRIS</span>
+
+                        <!-- Convenience Store -->
+                        <div class="collapse collapse-arrow bg-base-200 rounded-lg">
+                            <input type="checkbox" name="convenience-accordion" class="peer" />
+                            <div class="collapse-title text-lg font-medium flex items-center gap-3">
+                                <span class="text-sm">🏪</span>
+                                Convenience Store
                             </div>
-                        </div>
-                        <div class="payment-method">
-                            <div class="flex items-center gap-3">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/2560px-Logo_ovo_purple.svg.png"
-                                    alt="OVO" class="h-6 object-contain">
-                                <span class="text-sm font-medium">OVO</span>
+                            <div class="collapse-content">
+                                <div class="payment-method-grid mt-4">
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="alfamart"
+                                            class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK9eGzK5aEzYQ5xVj9yjH8K1zL5K3F8oP7xA&s"
+                                                    alt="Alfamart" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">Alfamart</div>
+                                                    <div class="text-xs text-gray-500">Biaya admin Rp 2.500</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <label class="payment-method-option">
+                                        <input type="radio" name="payment" value="indomaret"
+                                            class="payment-method-input">
+                                        <div class="payment-method-card">
+                                            <div class="payment-method-info">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpVjHwM8KzY1RxH5xW7L9V2X8J4oK6F3N9dg&s"
+                                                    alt="Indomaret" class="h-6 w-auto object-contain">
+                                                <div class="payment-method-details">
+                                                    <div class="font-semibold text-sm">Indomaret</div>
+                                                    <div class="text-xs text-gray-500">Biaya admin Rp 2.500</div>
+                                                </div>
+                                            </div>
+                                            <div class="payment-method-price"></div>
+                                            <div class="payment-method-check-indicator">
+                                                <svg class="payment-method-check-icon" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="check-indicator">
+                        <svg class="check-icon" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
                 </div>
 
+
                 <!-- Step 4: Voucher -->
-                <div class="bg-muted rounded-xl p-6">
-                    <div class="flex items-center gap-3 mb-4">
+                <div class="bg-muted rounded-xl">
+                    <div class="flex items-center gap-3 mb-4 bg-linear px-6 pt-6 rounded-xl">
                         <div class="avatar relative">
                             <div
                                 class="w-8 h-8 bg-accent text-primary rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 relative">
@@ -675,16 +1076,15 @@
                         </div>
                         <h3 class="text-lg font-semibold text-primary">Kode Voucher</h3>
                     </div>
-                    <div class="flex gap-3">
-                        <input type="text" placeholder="Masukkan kode voucher"
-                            class="input input-bordered flex-1 bg-primary" />
+                    <div class="flex gap-3 px-6 pb-6">
+                        <input type="text" placeholder="Masukkan kode voucher" class="input input-form flex-1" />
                         <button class="btn btn-accent">Pakai</button>
                     </div>
                 </div>
 
                 <!-- Step 5: Confirmation -->
-                <div class="bg-muted rounded-xl p-6">
-                    <div class="flex items-center gap-3 mb-4">
+                <div class="bg-muted rounded-xl">
+                    <div class="flex items-center gap-3 mb-4 bg-linear px-6 pt-6 rounded-xl">
                         <div class="avatar relative">
                             <div
                                 class="w-8 h-8 bg-accent text-primary rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 relative">
@@ -694,18 +1094,18 @@
                         </div>
                         <h3 class="text-lg font-semibold text-primary">Konfirmasi Pesanan</h3>
                     </div>
-                    <div class="space-y-4">
+                    <div class="space-y-4 px-6 pb-6">
                         <div class="flex justify-between items-center py-2 border-b border-base-300">
                             <span class="text-sm text-muted">Harga Diamond</span>
-                            <span class="text-sm font-medium text-primary">Rp 19.000</span>
+                            <span id="basePrice" class="text-sm font-medium text-primary">-</span>
                         </div>
                         <div class="flex justify-between items-center py-2 border-b border-base-300">
                             <span class="text-sm text-muted">Biaya Admin</span>
-                            <span class="text-sm font-medium text-primary">Rp 1.000</span>
+                            <span id="adminFee" class="text-sm font-medium text-primary">-</span>
                         </div>
                         <div class="flex justify-between items-center py-2">
                             <span class="text-base font-medium text-primary">Total Pembayaran</span>
-                            <span class="text-lg font-semibold text-accent">Rp 20.000</span>
+                            <span id="totalPayment" class="text-lg font-semibold text-accent">-</span>
                         </div>
                         <button class="btn btn-accent w-full">Buat Pesanan</button>
                         <div class="text-center text-sm text-muted">

@@ -3,6 +3,7 @@
   /* Light Theme Colors */
   --color-bg-primary: #FFFFFF;
   --color-bg-muted: #EDEDED;
+  --color-bg-subtle: #d9d9d9;
   --color-bg-inverse: #252529;
 
   /* Colors */
@@ -41,6 +42,10 @@
   --color-shadow: rgba(15, 23, 42, 0.1);
   --color-shadow-dark: rgba(0, 0, 0, 0.3);
 
+  /* Linear Colors */
+  --color-linear: linear-gradient(180deg, #f5f5f5, rgba(255, 255, 255, 0));
+  --color-linear-dark: linear-gradient(180deg, #272b34, rgba(27, 30, 36, 0));
+
   /* Shadow Effects */
   --shadow-sm: 0 1px 2px var(--color-shadow);
   --shadow-md: 0 4px 6px -1px var(--color-shadow);
@@ -61,6 +66,7 @@
   /* Background Colors */
   --color-bg-primary: var(--color-dark-bg-primary);
   --color-bg-muted: var(--color-dark-bg-muted);
+  --color-bg-subtle: var(--color-dark-bg-subtle);
 
   /* Text Colors */
   --color-text-primary: var(--color-dark-text-primary);
@@ -70,6 +76,9 @@
   --color-border: rgba(226, 232, 240, 0.1);
   --color-border-hover: rgba(226, 232, 240, 0.2);
   --color-border-solid: #2C374F;
+
+  /* Border Colors */
+  --color-linear: var(--color-linear-dark);
 
   /* Shadow Effects */
   --color-shadow: var(--color-shadow-dark);
@@ -115,6 +124,10 @@
 .bg-accent {
   background-color: var(--color-accent) !important;
   transition: background-color 0.3s ease;
+}
+
+.bg-linear {
+  background-image: var(--color-linear);
 }
 
 /* Text Colors */
