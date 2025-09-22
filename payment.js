@@ -56,9 +56,33 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeDiamondSelection();
     initializePaymentMethodSelection();
     initializeOrderButton();
+    initializeCaraTransaksiModal();
     loadTransactionState();
+
     console.log('Payment system initialized');
 });
+
+function initializeCaraTransaksiModal() {
+    const openBtn = document.getElementById("openCaraTransaksiModal");
+    const modal = document.getElementById("caraTransaksiModal");
+    const closeBtn = document.getElementById("closeCaraTransaksiModal");
+
+    if (openBtn && modal) {
+        openBtn.addEventListener("click", () => {
+            modal.showModal();
+        });
+    }
+
+    if (closeBtn && modal) {
+        closeBtn.addEventListener("click", () => {
+            modal.close();
+        });
+    }
+}
+
+function closeCaraTransaksiModal() {
+    document.getElementById('caraTransaksiModal').close();
+}
 
 function saveTransactionState() {
     localStorage.setItem("transactionState", JSON.stringify(transactionState));
