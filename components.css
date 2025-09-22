@@ -290,6 +290,12 @@ a:hover {
   border-color: var(--color-accent) !important;
 }
 
+.diamond-card.selected,
+.payment-method-card.selected {
+  border: 2.5px solid var(--color-accent) !important;
+  background: var(--color-bg-muted) !important;
+}
+
 .diamond-amount {
   font-size: 16px;
   font-weight: 700;
@@ -433,6 +439,7 @@ a:hover {
 
 .payment-method-card:hover {
   border-color: var(--color-accent) !important;
+  cursor: pointer;
 }
 
 .payment-method-input {
