@@ -407,10 +407,6 @@ a:hover {
 }
 
 @media (max-width: 480px) {
-  body {
-    padding: 1rem;
-  }
-
   .diamond-grid {
     gap: 10px;
   }
