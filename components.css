@@ -530,3 +530,10 @@ a:hover {
     min-height: 70px;
   }
 }
+
+.payment-method-info img {
+  width: 48px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
