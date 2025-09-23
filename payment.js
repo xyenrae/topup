@@ -6,6 +6,8 @@
 const transactionState = {
     uid: 0,
     server: 0,
+    username: "",
+    game: "Mobile Legends Game ID",
     selectedAmount: null,
     selectedAmountPrice: 0,
     selectedMethod: null,
@@ -125,6 +127,8 @@ function loadTransactionState() {
                 diamondInput.checked = true;
             }
             updateDiamondVisualSelection(transactionState.selectedAmount);
+            updateAllPaymentMethodPrices();
+
         }
     }
 }
@@ -421,24 +425,30 @@ document.head.appendChild(style);
 console.log('Payment system script loaded successfully');
 
 function showConfirmationModal() {
-    if (!transactionState.uid || !transactionState.server || !transactionState.selectedAmount || !transactionState.selectedMethod) {
-        alert('Silakan pilih jumlah diamond dan metode pembayaran terlebih dahulu!');
+    if (
+        !transactionState.uid ||
+        !transactionState.server ||
+        !transactionState.selectedAmount ||
+        !transactionState.selectedMethod
+    ) {
+        alert("Silakan pilih jumlah diamond dan metode pembayaran terlebih dahulu!");
         return;
     }
 
     // Populate modal data
-    document.getElementById('username').textContent = transactionState.username;
-    document.getElementById('uid').textContent = transactionState.uid;
-    document.getElementById('server').textContent = transactionState.server;
-    document.getElementById('diamondAmount').textContent = transactionState.selectedAmount + ' UC';
-    document.getElementById('diamondPrice').textContent = formatIDR(transactionState.selectedAmountPrice);
-    document.getElementById('paymentMethod').textContent = transactionState.selectedMethod;
-    document.getElementById('paymentFee').textContent = formatIDR(transactionState.selectedMethodFee);
-    document.getElementById('totalAmount').textContent = formatIDR(transactionState.selectedAmountPrice + transactionState.selectedMethodFee);
+    document.getElementById("kategoriLayanan").textContent = transactionState.game || "-";
+    document.getElementById("nominalLayanan").textContent =
+        transactionState.selectedAmount + " Diamonds";
+    document.getElementById("nickname").textContent = transactionState.username || "-";
+    document.getElementById("userId").textContent =
+        transactionState.uid + " (" + transactionState.server + ")";
+    document.getElementById("paymentMethod").textContent =
+        transactionState.selectedMethod || "-";
 
     // Show modal
-    document.getElementById('confirmationModal').showModal();
+    document.getElementById("confirmationModal").showModal();
 }
+
 
 function closeModal() {
     document.getElementById('confirmationModal').close();
