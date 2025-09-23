@@ -21,6 +21,14 @@
 
     <!-- Custom JavaScript -->
     <script src="navbar.js" defer></script>
+    <script>
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        } else {
+            document.documentElement.setAttribute("data-theme", "light"); // default
+        }
+    </script>
 </head>
 
 <body class="bg-muted">
