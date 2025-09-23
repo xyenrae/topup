@@ -427,8 +427,8 @@ a:hover {
 }
 
 .payment-method-card {
-  background: var(--color-bg-muted);
-  border: 2.5px solid var(--color-border);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-bg-muted);
   border-radius: 8px;
   padding: 16px;
   transition: all 0.2s ease;
@@ -441,7 +441,7 @@ a:hover {
 }
 
 .payment-method-card:hover {
-  border-color: var(--color-accent) !important;
+  border: 1px solid var(--color-border);
   cursor: pointer;
 }
 
@@ -475,7 +475,7 @@ a:hover {
 }
 
 .payment-method-input:checked+.payment-method-card {
-  background: var(--color-bg-subtle);
+  background: var(--color-bg-primary) !important;
   border-color: var(--color-accent);
 }
 
