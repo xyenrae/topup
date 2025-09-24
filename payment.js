@@ -1,507 +1,381 @@
-/* ===========================
-   INTEGRATED PAYMENT FUNCTIONALITY
-   =========================== */
+// Payment page JavaScript functionality
 
-// Initialize the transaction state with diamond prices from HTML
-const transactionState = {
-    uid: 0,
-    server: 0,
-    username: "",
-    game: "Mobile Legends Game ID",
-    selectedAmount: null,
-    selectedAmountPrice: 0,
-    selectedMethod: null,
-    selectedMethodFee: 0,
-    diamondPrices: {
-        '60': { current: 16000, original: 16000 },
-        '120': { current: 29629, original: 30784 },
-        '325': { current: 75240, original: 79000 },
-        '660': { current: 150480, original: 158000 },
-        '1800': { current: 376200, original: 395000 },
-        '3850': { current: 752400, original: 790000 }
+class PaymentTimer {
+    constructor() {
+        this.hoursElement = document.getElementById('hours');
+        this.minutesElement = document.getElementById('minutes');
+        this.secondsElement = document.getElementById('seconds');
+
+        // Set countdown target (24 hours from now)
+        this.targetTime = new Date().getTime() + (24 * 60 * 60 * 1000);
+
+        this.init();
+    }
+
+    init() {
+        // Start the countdown immediately
+        this.updateCountdown();
+
+        // Update every second
+        this.interval = setInterval(() => {
+            this.updateCountdown();
+        }, 1000);
+    }
+
+    updateCountdown() {
+        const now = new Date().getTime();
+        const distance = this.targetTime - now;
+
+        if (distance < 0) {
+            this.handleExpired();
+            return;
+        }
+
+        const hours = Math.floor(distance / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        this.updateDisplay(hours, minutes, seconds);
+    }
+
+    updateDisplay(hours, minutes, seconds) {
+        const newHours = this.padZero(hours);
+        const newMinutes = this.padZero(minutes);
+        const newSeconds = this.padZero(seconds);
+
+        // Add flip animation if value changed
+        this.updateWithAnimation(this.hoursElement, newHours);
+        this.updateWithAnimation(this.minutesElement, newMinutes);
+        this.updateWithAnimation(this.secondsElement, newSeconds);
+    }
+
+    updateWithAnimation(element, newValue) {
+        if (element && element.textContent !== newValue) {
+            element.classList.add('flip');
+
+            setTimeout(() => {
+                element.textContent = newValue;
+                element.classList.remove('flip');
+            }, 150);
+        }
+    }
+
+    padZero(num) {
+        return num < 10 ? '0' + num : num.toString();
+    }
+
+    handleExpired() {
+        clearInterval(this.interval);
+
+        // Update display to show expired
+        if (this.hoursElement) this.hoursElement.textContent = '00';
+        if (this.minutesElement) this.minutesElement.textContent = '00';
+        if (this.secondsElement) this.secondsElement.textContent = '00';
+
+        // Show expired message
+        this.showExpiredMessage();
+    }
+
+    showExpiredMessage() {
+        const statusBadge = document.querySelector('.badge-warning');
+        if (statusBadge) {
+            statusBadge.textContent = 'Expired';
+            statusBadge.className = 'badge badge-error badge-lg';
+        }
+
+        // Show notification
+        PaymentPage.showNotification('Waktu pembayaran telah habis!', 'error');
+    }
+}
+
+class PaymentPage {
+    constructor() {
+        this.timer = new PaymentTimer();
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+        this.initializeTooltips();
+        this.checkPaymentStatus();
+    }
+
+    setupEventListeners() {
+        // Copy order number to clipboard
+        const orderNumberElement = document.getElementById('orderNumber');
+        if (orderNumberElement) {
+            orderNumberElement.addEventListener('click', () => {
+                this.copyToClipboard(orderNumberElement.textContent);
+            });
+
+            orderNumberElement.style.cursor = 'pointer';
+            orderNumberElement.title = 'Klik untuk copy nomor pesanan';
+        }
+
+        // Add refresh button
+        this.addRefreshButton();
+
+        // Add payment status checker
+        this.addStatusChecker();
+    }
+
+    copyToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                PaymentPage.showToast('Nomor pesanan berhasil dicopy!', 'success');
+            }).catch(() => {
+                this.fallbackCopyTextToClipboard(text);
+            });
+        } else {
+            this.fallbackCopyTextToClipboard(text);
+        }
+    }
+
+    fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.opacity = "0";
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            PaymentPage.showToast('Nomor pesanan berhasil dicopy!', 'success');
+        } catch (err) {
+            PaymentPage.showToast('Gagal copy nomor pesanan', 'error');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+    static showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-top toast-end z-50`;
+        toast.innerHTML = `
+            <div class="alert alert-${type}">
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 3000);
+    }
+
+    static showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} fixed top-4 right-4 w-auto max-w-sm z-50 shadow-lg`;
+        notification.innerHTML = `
+            <div>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+
+    addRefreshButton() {
+        const refreshButton = document.createElement('button');
+        refreshButton.className = 'btn btn-outline btn-sm mt-4';
+        refreshButton.innerHTML = '🔄 Refresh Status';
+        refreshButton.onclick = () => this.refreshPaymentStatus();
+
+        // Add to payment instructions card
+        const instructionsCard = document.querySelector('.card-body h3');
+        if (instructionsCard) {
+            const cardBody = instructionsCard.closest('.card-body');
+            cardBody.appendChild(refreshButton);
+        }
+    }
+
+    addStatusChecker() {
+        // Simulate payment status checking every 30 seconds
+        this.statusInterval = setInterval(() => {
+            this.checkPaymentStatus();
+        }, 30000);
+    }
+
+    refreshPaymentStatus() {
+        const refreshBtn = document.querySelector('button[onclick*="refreshPaymentStatus"]');
+        if (refreshBtn) {
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '⏳ Checking...';
+
+            // Simulate API call
+            setTimeout(() => {
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '🔄 Refresh Status';
+                PaymentPage.showToast('Status pembayaran telah diperbarui', 'info');
+            }, 2000);
+        }
+    }
+
+    checkPaymentStatus() {
+        // Simulate random payment status check
+        const random = Math.random();
+
+        if (random > 0.995) { // Very small chance to simulate payment success
+            this.updatePaymentStatus('success');
+        }
+    }
+
+    updatePaymentStatus(status) {
+        const statusBadges = document.querySelectorAll('.badge-warning');
+
+        switch (status) {
+            case 'success':
+                statusBadges.forEach(element => {
+                    element.textContent = 'Pembayaran Berhasil';
+                    element.className = 'badge badge-success badge-lg';
+                });
+
+                // Stop timer
+                if (this.timer && this.timer.interval) {
+                    clearInterval(this.timer.interval);
+                }
+
+                // Stop status checker
+                if (this.statusInterval) {
+                    clearInterval(this.statusInterval);
+                }
+
+                this.showSuccessMessage();
+                break;
+
+            case 'failed':
+                statusBadges.forEach(element => {
+                    element.textContent = 'Pembayaran Gagal';
+                    element.className = 'badge badge-error badge-lg';
+                });
+                break;
+        }
+    }
+
+    showSuccessMessage() {
+        const successModal = document.createElement('div');
+        successModal.className = 'modal modal-open';
+        successModal.innerHTML = `
+            <div class="modal-box">
+                <h3 class="font-bold text-lg text-success">🎉 Pembayaran Berhasil!</h3>
+                <p class="py-4">Terima kasih! Pembayaran Anda telah berhasil diproses. Token akan segera masuk ke akun game Anda.</p>
+                <div class="modal-action">
+                    <button class="btn btn-success" onclick="this.closest('.modal').remove()">OK</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(successModal);
+
+        // Auto close after 8 seconds
+        setTimeout(() => {
+            if (successModal.parentNode) {
+                successModal.remove();
+            }
+        }, 8000);
+    }
+
+    initializeTooltips() {
+        // Add hover effects for QR code
+        const qrCode = document.querySelector('.w-44');
+        if (qrCode) {
+            qrCode.addEventListener('mouseenter', () => {
+                qrCode.style.transform = 'scale(1.05)';
+                qrCode.style.transition = 'transform 0.2s ease';
+            });
+
+            qrCode.addEventListener('mouseleave', () => {
+                qrCode.style.transform = 'scale(1)';
+            });
+        }
+
+        // Make order number in transaction info clickable
+        const orderElements = document.querySelectorAll('.font-medium');
+        orderElements.forEach(element => {
+            if (element.textContent.includes('RRQ')) {
+                element.style.cursor = 'pointer';
+                element.title = 'Klik untuk copy';
+                element.addEventListener('click', () => {
+                    this.copyToClipboard(element.textContent.replace(' 📋', ''));
+                });
+            }
+        });
+    }
+}
+
+// Utility functions
+window.PaymentUtils = {
+    formatCurrency: (amount) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(amount);
     },
-    paymentFees: {
-        // E-wallet & QRIS - Free admin fees
-        'dana': 0,
-        'gopay': 0,
-        'ovo': 0,
-        'shopeepay': 0,
-        'linkaja': 0,
-        // Virtual Account - Rp 4.000 admin fee
-        'bca-va': 4000,
-        'mandiri-va': 4000,
-        'bni-va': 4000,
-        'bri-va': 4000,
-        'permata-va': 4000,
-        'cimb-va': 4000,
-        'danamon-va': 4000,
-        'maybank-va': 4000,
-        // Convenience Store - Rp 2.500 admin fee
-        'alfamart': 2500,
-        'indomaret': 2500
+
+    formatDate: (date) => {
+        return new Intl.DateTimeFormat('id-ID', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }).format(new Date(date));
+    },
+
+    validateOrderNumber: (orderNumber) => {
+        return /^[A-Z]{3}\d{14}$/.test(orderNumber);
+    },
+
+    // Simulate payment success (for testing)
+    simulatePaymentSuccess: () => {
+        if (window.paymentPageInstance) {
+            window.paymentPageInstance.updatePaymentStatus('success');
+        }
+    },
+
+    // Get remaining time
+    getRemainingTime: () => {
+        if (window.paymentPageInstance && window.paymentPageInstance.timer) {
+            const now = new Date().getTime();
+            const distance = window.paymentPageInstance.timer.targetTime - now;
+            return distance > 0 ? Math.floor(distance / 1000) : 0;
+        }
+        return 0;
     }
 };
 
-// Format currency to IDR
-function formatIDR(number) {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(number).replace('IDR', 'Rp');
-}
-
-// Initialize event listeners when DOM is loaded
-document.addEventListener('DOMContentLoaded', function () {
-    initializeUidAndServerInputs();
-    initializeDiamondSelection();
-    initializePaymentMethodSelection();
-    initializeOrderButton();
-    initializeCaraTransaksiModal();
-    loadTransactionState();
-
-    console.log('Payment system initialized');
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Payment page initializing...');
+    window.paymentPageInstance = new PaymentPage();
+    console.log('Payment page loaded successfully');
 });
 
-function initializeCaraTransaksiModal() {
-    const openBtn = document.getElementById("openCaraTransaksiModal");
-    const modal = document.getElementById("caraTransaksiModal");
-    const closeBtn = document.getElementById("closeCaraTransaksiModal");
-
-    if (openBtn && modal) {
-        openBtn.addEventListener("click", () => {
-            modal.showModal();
-        });
+// Handle page visibility change
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        console.log('Page hidden - timer continues in background');
+    } else {
+        console.log('Page visible - timer active');
     }
-
-    if (closeBtn && modal) {
-        closeBtn.addEventListener("click", () => {
-            modal.close();
-        });
-    }
-}
-
-function closeCaraTransaksiModal() {
-    document.getElementById('caraTransaksiModal').close();
-}
-
-function saveTransactionState() {
-    localStorage.setItem("transactionState", JSON.stringify(transactionState));
-}
-
-function loadTransactionState() {
-    const saved = localStorage.getItem("transactionState");
-    if (saved) {
-        Object.assign(transactionState, JSON.parse(saved));
-        updateConfirmationSection();
-
-        // Sync payment method selection
-        if (transactionState.selectedMethod) {
-            const paymentInput = document.querySelector(
-                `.payment-method-input[value="${transactionState.selectedMethod}"]`
-            );
-            if (paymentInput) {
-                paymentInput.checked = true; // set input checked
-                updatePaymentVisualSelection(transactionState.selectedMethod);
-
-                // Buka collapse container
-                const collapse = paymentInput.closest(".collapse");
-                if (collapse) {
-                    collapse.classList.add("collapse-open");
-                    // kalau pakai input[type=checkbox] di header collapse:
-                    const collapseToggle = collapse.querySelector("input[type=checkbox]");
-                    if (collapseToggle) {
-                        collapseToggle.checked = true;
-                    }
-                }
-            }
-        }
-
-        // Sync diamond selection (biar lengkap)
-        if (transactionState.selectedAmount) {
-            const diamondInput = document.querySelector(
-                `.diamond-input[value="${transactionState.selectedAmount}"]`
-            );
-            if (diamondInput) {
-                diamondInput.checked = true;
-            }
-            updateDiamondVisualSelection(transactionState.selectedAmount);
-            updateAllPaymentMethodPrices();
-
-        }
-    }
-}
-
-function clearTransactionState() {
-    localStorage.removeItem("transactionState");
-}
-
-function generateOrderId() {
-    return 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-}
-
-function saveOrderHistory(orderData) {
-    let history = JSON.parse(localStorage.getItem("ordersHistory")) || [];
-    history.push(orderData);
-    localStorage.setItem("ordersHistory", JSON.stringify(history));
-}
-
-// Initialize UID & Server inputs
-function initializeUidAndServerInputs() {
-    const uidInput = document.getElementById('input-uid');
-    const serverInput = document.getElementById('input-server');
-
-    if (uidInput) {
-        uidInput.addEventListener('input', () => {
-            transactionState.uid = uidInput.value.trim();
-            updateConfirmationSection();
-            saveTransactionState();
-        });
-    }
-
-    if (serverInput) {
-        serverInput.addEventListener('input', () => {
-            transactionState.server = serverInput.value.trim();
-            updateConfirmationSection();
-            saveTransactionState();
-        });
-    }
-}
-
-// Initialize diamond selection functionality
-function initializeDiamondSelection() {
-    const diamondInputs = document.querySelectorAll('.diamond-input');
-
-    diamondInputs.forEach(input => {
-        input.addEventListener('change', function () {
-            if (this.checked) {
-                const amount = this.value;
-                selectDiamond(amount);
-            }
-        });
-    });
-}
-
-// Initialize payment method selection functionality
-function initializePaymentMethodSelection() {
-    const paymentInputs = document.querySelectorAll('.payment-method-input');
-
-    paymentInputs.forEach(input => {
-        input.addEventListener('change', function () {
-            if (this.checked) {
-                const method = this.value;
-                selectPaymentMethod(method);
-            }
-        });
-    });
-}
-
-// Initialize order button
-function initializeOrderButton() {
-    const orderButton = document.querySelector('.btn-accent.w-full');
-    if (orderButton) {
-        orderButton.id = 'orderButton';
-        orderButton.addEventListener('click', function (e) {
-            e.preventDefault();
-            createOrder();
-        });
-    }
-}
-
-// Function to select diamond amount
-function selectDiamond(amount) {
-    console.log('Selecting diamond amount:', amount);
-
-    // Update transaction state
-    transactionState.selectedAmount = amount;
-    transactionState.selectedAmountPrice = transactionState.diamondPrices[amount].current;
-
-    // Update all payment method prices
-    updateAllPaymentMethodPrices();
-
-    // Update confirmation section
-    updateConfirmationSection();
-
-    // Update visual selection
-    updateDiamondVisualSelection(amount);
-
-    saveTransactionState();
-}
-
-// Function to update visual selection for diamond cards
-function updateDiamondVisualSelection(selectedAmount) {
-    const diamondCards = document.querySelectorAll('.diamond-card');
-    diamondCards.forEach(card => {
-        const input = card.parentNode.querySelector('.diamond-input');
-        if (input && input.value === selectedAmount) {
-            card.classList.add('selected');
-        } else {
-            card.classList.remove('selected');
-        }
-    });
-}
-
-// Function to update all payment method prices
-function updateAllPaymentMethodPrices() {
-    const basePrice = transactionState.selectedAmountPrice;
-
-    if (!basePrice) return;
-
-    // Update price for each payment method
-    const paymentCards = document.querySelectorAll('.payment-method-card');
-    paymentCards.forEach(card => {
-        const input = card.parentNode.querySelector('.payment-method-input');
-        if (input) {
-            const method = input.value;
-            const fee = transactionState.paymentFees[method] || 0;
-            const totalPrice = basePrice + fee;
-
-            // Find or create price element
-            let priceElement = card.querySelector('.payment-method-price');
-            if (priceElement) {
-                priceElement.textContent = formatIDR(totalPrice);
-            }
-        }
-    });
-
-    console.log('Updated all payment method prices with base price:', basePrice);
-}
-
-// Function to select payment method
-function selectPaymentMethod(method) {
-    console.log('Selecting payment method:', method);
-
-    // Update transaction state
-    transactionState.selectedMethod = method;
-    transactionState.selectedMethodFee = transactionState.paymentFees[method] || 0;
-
-    // Update confirmation section
-    updateConfirmationSection();
-
-    // Update visual selection
-    updatePaymentVisualSelection(method);
-
-    saveTransactionState();
-}
-
-// Function to update visual selection for payment methods
-function updatePaymentVisualSelection(selectedMethod) {
-    const paymentCards = document.querySelectorAll('.payment-method-card');
-    paymentCards.forEach(card => {
-        const input = card.parentNode.querySelector('.payment-method-input');
-        if (input && input.value === selectedMethod) {
-            card.classList.add('selected');
-        } else {
-            card.classList.remove('selected');
-        }
-    });
-}
-
-// Function to update confirmation section
-function updateConfirmationSection() {
-    const uid = transactionState.uid;
-    const server = transactionState.server;
-    const basePrice = transactionState.selectedAmountPrice;
-    const adminFee = transactionState.selectedMethodFee;
-    const totalPrice = basePrice + adminFee;
-
-    console.log('Updating confirmation:', { uid, server, basePrice, adminFee, totalPrice });
-
-    // Update uid
-    const uidElement = document.getElementById('input-uid');
-    if (uidElement) {
-        uidElement.value = uid ? uid : '';
-    }
-
-    // Update server
-    const serverElement = document.getElementById('input-server');
-    if (serverElement) {
-        serverElement.value = server ? server : '';
-    }
-
-    // Update base price
-    const basePriceElement = document.getElementById('basePrice');
-    if (basePriceElement) {
-        basePriceElement.textContent = basePrice ? formatIDR(basePrice) : '-';
-    }
-
-    // Update admin fee
-    const adminFeeElement = document.getElementById('adminFee');
-    if (adminFeeElement) {
-        adminFeeElement.textContent = adminFee ? formatIDR(adminFee) : 'Gratis';
-    }
-
-    // Update total payment
-    const totalPaymentElement = document.getElementById('totalPayment');
-    if (totalPaymentElement) {
-        totalPaymentElement.textContent = basePrice ? formatIDR(totalPrice) : '-';
-    }
-
-    // Update order button state
-    updateOrderButtonState();
-}
-
-// Function to update order button state
-function updateOrderButtonState() {
-    const orderButton = document.getElementById('orderButton');
-    if (orderButton) {
-        const canOrder = transactionState.uid && transactionState.server && transactionState.selectedAmount && transactionState.selectedMethod;
-        orderButton.disabled = !canOrder;
-
-        if (canOrder) {
-            orderButton.classList.remove('opacity-50', 'cursor-not-allowed');
-            orderButton.textContent = 'Buat Pesanan';
-        } else {
-            orderButton.classList.add('opacity-50', 'cursor-not-allowed');
-            orderButton.textContent = 'Lengkapi data terlebih dahulu!';
-        }
-    }
-}
-
-// Function to create order
-function createOrder() {
-    if (!transactionState.uid || !transactionState.server || !transactionState.selectedAmount || !transactionState.selectedMethod) {
-        alert('Silakan lengkapi data terlebih dahulu!');
-        return;
-    }
-
-    const orderData = {
-        user: {
-            user: transactionState.uid,
-            server: transactionState.server
-        },
-        diamond: {
-            amount: transactionState.selectedAmount,
-            price: transactionState.selectedAmountPrice
-        },
-        payment: {
-            method: transactionState.selectedMethod,
-            fee: transactionState.selectedMethodFee
-        },
-        total: transactionState.selectedAmountPrice + transactionState.selectedMethodFee
-    };
-
-    console.log('Creating order with data:', orderData);
-
-    // Here you would typically send the order to your backend
-    showConfirmationModal();
-}
-
-// Add CSS for selected states
-const style = document.createElement('style');
-style.textContent = `
-    .diamond-card.selected {
-        border: 2px solid var(--color-primary);
-        background: rgba(16, 185, 129, 0.1);
-    }
-    
-    .diamond-card.selected .check-indicator {
-        opacity: 1;
-        border: 2px solid var(--color-primary);
-    }
-    
-    .payment-method-card.selected {
-        border: 2px solid var(--color-primary);
-        background: rgba(16, 185, 129, 0.1);
-    }
-    
-    .payment-method-card.selected .payment-method-check-indicator {
-        opacity: 1;
-        border: 2px solid var(--color-primary);
-    }
-    
-    .check-indicator, .payment-method-check-indicator {
-        opacity: 0;
-        transition: opacity 0.2s ease;
-    }
-    
-    .btn:disabled {
-        cursor: not-allowed;
-    }
-`;
-document.head.appendChild(style);
-
-console.log('Payment system script loaded successfully');
-
-function showConfirmationModal() {
-    if (
-        !transactionState.uid ||
-        !transactionState.server ||
-        !transactionState.selectedAmount ||
-        !transactionState.selectedMethod
-    ) {
-        alert("Silakan pilih jumlah diamond dan metode pembayaran terlebih dahulu!");
-        return;
-    }
-
-    // Populate modal data
-    document.getElementById("kategoriLayanan").textContent = transactionState.game || "-";
-    document.getElementById("nominalLayanan").textContent =
-        transactionState.selectedAmount + " Diamonds";
-    document.getElementById("nickname").textContent = transactionState.username || "-";
-    document.getElementById("userId").textContent =
-        transactionState.uid + " (" + transactionState.server + ")";
-    document.getElementById("paymentMethod").textContent =
-        transactionState.selectedMethod || "-";
-
-    // Show modal
-    document.getElementById("confirmationModal").showModal();
-}
-
-
-function closeModal() {
-    document.getElementById('confirmationModal').close();
-}
-
-function confirmOrder() {
-    const orderId = generateOrderId();
-
-    const orderData = {
-        orderId,
-        timestamp: new Date().toISOString(),
-        user: {
-            uid: transactionState.uid,
-            server: transactionState.server,
-        },
-        diamond: {
-            amount: transactionState.selectedAmount,
-            price: transactionState.selectedAmountPrice
-        },
-        payment: {
-            method: transactionState.selectedMethod,
-            fee: transactionState.selectedMethodFee
-        },
-        total: transactionState.selectedAmountPrice + transactionState.selectedMethodFee
-    };
-
-    console.log('Order confirmed:', orderData);
-
-    // Simpan ke riwayat
-    saveOrderHistory(orderData);
-
-    // Hapus state aktif (reset)
-    clearTransactionState();
-
-    // Tutup modal konfirmasi
-    closeModal();
-
-    // Isi order ID di success modal
-    const orderIdElement = document.getElementById('successOrderId');
-    if (orderIdElement) {
-        orderIdElement.textContent = orderId;
-    }
-
-    // Show success modal
-    setTimeout(() => {
-        document.getElementById('successModal').showModal();
-    }, 300);
-}
-
-function proceedToPayment() {
-    const orderId = document.getElementById('successOrderId').textContent;
-    console.log("Proceeding to payment for Order:", orderId);
-
-    // redirect dummy
-    window.location.href = "/payment?orderId=" + orderId;
-}
+});
+
+// Debug functions (can be called from browser console)
+window.debug = {
+    simulateSuccess: () => PaymentUtils.simulatePaymentSuccess(),
+    getRemainingTime: () => PaymentUtils.getRemainingTime(),
+    showToast: (msg, type) => PaymentPage.showToast(msg, type || 'info')
+};
